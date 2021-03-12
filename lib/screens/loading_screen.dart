@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:climax/services/location.dart';
-import 'package:http/http.dart' as http;
+import 'package:climax/services/networking.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -8,23 +8,23 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
+  double latitude;
+  double longitude;
   @override
   void initState() {
     super.initState();
-    getLocation();
-    getData();
+    getLocationData();
   }
 
-  void getLocation() async {
+  void getLocationData() async {
     Location location = Location();
     await location.getCUrrentLocation();
-    print(location.latitude);
-    print(location.longitude);
-  }
+    latitude = location.latitude;
+    longitude = location.longitude;
 
-  void getData() async {
-    http.Response response = await http.get(
-        'https://api.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=95de81dabf1be02727437790fb6a9191');
+    NetworkHelper networkHelper = NetworkHelper(
+        'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=95de81dabf1be02727437790fb6a9191');
+    var weatherData = await networkHelper.getData();
   }
 
   @override
