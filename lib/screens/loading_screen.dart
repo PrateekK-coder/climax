@@ -1,6 +1,8 @@
+import 'package:climax/screens/location_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:climax/services/location.dart';
-import 'package:climax/services/networking.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'location_screen.dart';
+import 'package:climax/services/weather.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -8,8 +10,6 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  double latitude;
-  double longitude;
   @override
   void initState() {
     super.initState();
@@ -17,18 +17,23 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   void getLocationData() async {
-    Location location = Location();
-    await location.getCUrrentLocation();
-    latitude = location.latitude;
-    longitude = location.longitude;
-
-    NetworkHelper networkHelper = NetworkHelper(
-        'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=95de81dabf1be02727437790fb6a9191');
-    var weatherData = await networkHelper.getData();
+  var weatherData = await WeatherModel().getLocationWeather();
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return LocationScreen(
+        locationWeather: weatherData,
+      );
+    }));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      body: Center(
+        child: SpinKitChasingDots(
+          color: Colors.white,
+          size: 100.0,
+        ),
+      ),
+    );
   }
 }

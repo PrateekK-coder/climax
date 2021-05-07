@@ -1,4 +1,19 @@
+import 'package:climax/services/location.dart';
+import 'package:climax/services/networking.dart';
+
 class WeatherModel {
+
+  Future<dynamic> getLocationWeather() async{
+    Location location = Location();
+    await location.getCUrrentLocation();
+
+    NetworkHelper networkHelper = NetworkHelper(
+        'https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=95de81dabf1be02727437790fb6a9191&units=metric');
+    var weatherData = await networkHelper.getData();
+    return weatherData;
+  }
+
+
   String getWeatherIcon(int condition) {
     if (condition < 300) {
       return '🌩';
